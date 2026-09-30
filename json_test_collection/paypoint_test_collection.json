@@ -1,0 +1,1374 @@
+{
+    "info": {
+        "_postman_id": "7e4e8c7d-5d1a-4b9a-9c3e-p2p-wallet",
+        "name": "PayPoint Test Collection",
+        "description": "Complete test collection for Paypoint Project. Run requests in order. Amounts are represented in paise.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000"
+        },
+        {
+            "key": "aliceId",
+            "value": ""
+        },
+        {
+            "key": "bobId",
+            "value": ""
+        },
+        {
+            "key": "charlieId",
+            "value": ""
+        },
+        {
+            "key": "daveId",
+            "value": ""
+        },
+        {
+            "key": "aliceWalletId",
+            "value": ""
+        },
+        {
+            "key": "bobWalletId",
+            "value": ""
+        },
+        {
+            "key": "charlieWalletId",
+            "value": ""
+        },
+        {
+            "key": "daveWalletId",
+            "value": ""
+        },
+        {
+            "key": "depositKeyAlice",
+            "value": "deposit-alice-001"
+        },
+        {
+            "key": "depositKeyBob",
+            "value": "deposit-bob-001"
+        },
+        {
+            "key": "depositKeyDave",
+            "value": "deposit-dave-001"
+        },
+        {
+            "key": "transferKey1",
+            "value": "transfer-alice-bob-001"
+        },
+        {
+            "key": "transferKey2",
+            "value": "transfer-alice-charlie-001"
+        },
+        {
+            "key": "transferKeyInsufficient",
+            "value": "transfer-insufficient-001"
+        },
+        {
+            "key": "transferId",
+            "value": ""
+        },
+        {
+            "key": "depositTransactionId",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "01 - Health Check",
+            "item": [
+                {
+                    "name": "Health",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/health",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Server is healthy', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Status is ok', function () {",
+                                    "    pm.expect(pm.response.json().status).to.eql('ok');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "02 - Create Users",
+            "item": [
+                {
+                    "name": "Create Alice",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice.wallet@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Alice created', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('aliceId', data.id);",
+                                    "",
+                                    "pm.test('Alice has an ID', function () {",
+                                    "    pm.expect(data.id).to.exist;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Bob",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Bob\",\n  \"email\": \"bob.wallet@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Bob created', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('bobId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Charlie",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Charlie\",\n  \"email\": \"charlie.wallet@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Charlie created', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('charlieId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Dave",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Dave\",\n  \"email\": \"dave.wallet@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Dave created', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('daveId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "03 - User APIs",
+            "item": [
+                {
+                    "name": "Get Alice",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{aliceId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{aliceId}}"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Get Alice successful', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Duplicate Email - Should Fail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Alice Duplicate\",\n  \"email\": \"alice.wallet@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Duplicate email returns 409', function () {",
+                                    "    pm.response.to.have.status(409);",
+                                    "});",
+                                    "",
+                                    "pm.test('Correct error code', function () {",
+                                    "    pm.expect(pm.response.json().error.code).to.eql('EMAIL_ALREADY_EXISTS');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "04 - Get Wallets",
+            "item": [
+                {
+                    "name": "Get Alice Wallet",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{aliceId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{aliceId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Alice wallet found', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('aliceWalletId', data.id);",
+                                    "",
+                                    "pm.test('Wallet starts with zero balance', function () {",
+                                    "    pm.expect(Number(data.balance)).to.eql(0);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Bob Wallet",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{bobId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{bobId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Bob wallet found', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('bobWalletId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Charlie Wallet",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{charlieId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{charlieId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Charlie wallet found', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('charlieWalletId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Dave Wallet",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{daveId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{daveId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Dave wallet found', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('daveWalletId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "05 - Deposits",
+            "item": [
+                {
+                    "name": "Deposit ₹1000 to Alice",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": 100000,\n  \"idempotency_key\": \"{{depositKeyAlice}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{aliceWalletId}}/deposit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{aliceWalletId}}",
+                                "deposit"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Alice deposit successful', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('depositTransactionId', data.id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Retry Same Alice Deposit - Idempotency",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": 100000,\n  \"idempotency_key\": \"{{depositKeyAlice}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{aliceWalletId}}/deposit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{aliceWalletId}}",
+                                "deposit"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Idempotent deposit returns success', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Same transaction returned', function () {",
+                                    "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('depositTransactionId'));",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Deposit ₹500 to Bob",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": 50000,\n  \"idempotency_key\": \"{{depositKeyBob}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{bobWalletId}}/deposit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{bobWalletId}}",
+                                "deposit"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Bob deposit successful', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Deposit ₹1000 to Dave",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": 100000,\n  \"idempotency_key\": \"{{depositKeyDave}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{daveWalletId}}/deposit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{daveWalletId}}",
+                                "deposit"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Dave deposit successful', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Invalid Deposit - Negative Amount",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": -500,\n  \"idempotency_key\": \"invalid-deposit-001\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{aliceWalletId}}/deposit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{aliceWalletId}}",
+                                "deposit"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Negative deposit rejected', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Deposit Same Key With Different Amount - Should Fail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": 99999,\n  \"idempotency_key\": \"{{depositKeyAlice}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{aliceWalletId}}/deposit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{aliceWalletId}}",
+                                "deposit"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Reusing key with different amount returns conflict', function () {",
+                                    "    pm.response.to.have.status(409);",
+                                    "});",
+                                    "",
+                                    "pm.test('Correct idempotency error', function () {",
+                                    "    pm.expect(pm.response.json().error.code).to.eql('IDEMPOTENCY_KEY_REUSED');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "06 - Verify Balances",
+            "item": [
+                {
+                    "name": "Alice Should Have ₹1000",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{aliceId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{aliceId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Alice balance is ₹1000', function () {",
+                                    "    pm.expect(Number(pm.response.json().balance)).to.eql(100000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Bob Should Have ₹500",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{bobId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{bobId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Bob balance is ₹500', function () {",
+                                    "    pm.expect(Number(pm.response.json().balance)).to.eql(50000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "07 - Successful Transfers",
+            "item": [
+                {
+                    "name": "Alice → Bob ₹300",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{bobId}}\",\n  \"amount\": 30000,\n  \"idempotency_key\": \"{{transferKey1}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Transfer successful', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "const data = pm.response.json();",
+                                    "pm.collectionVariables.set('transferId', data.id);",
+                                    "",
+                                    "pm.test('Transaction completed', function () {",
+                                    "    pm.expect(data.status).to.eql('COMPLETED');",
+                                    "});",
+                                    "",
+                                    "pm.test('Correct transfer amount', function () {",
+                                    "    pm.expect(Number(data.amount)).to.eql(30000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Retry Alice → Bob ₹300 - Idempotency",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{bobId}}\",\n  \"amount\": 30000,\n  \"idempotency_key\": \"{{transferKey1}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Idempotent retry succeeds', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Same transaction returned', function () {",
+                                    "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('transferId'));",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Alice → Charlie ₹500",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{charlieId}}\",\n  \"amount\": 50000,\n  \"idempotency_key\": \"{{transferKey2}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Second transfer successful', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "08 - Transfer Validation",
+            "item": [
+                {
+                    "name": "Insufficient Balance - Alice → Charlie ₹500",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{charlieId}}\",\n  \"amount\": 50000,\n  \"idempotency_key\": \"{{transferKeyInsufficient}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Insufficient balance rejected', function () {",
+                                    "    pm.response.to.have.status(422);",
+                                    "});",
+                                    "",
+                                    "pm.test('Correct error code', function () {",
+                                    "    pm.expect(pm.response.json().error.code).to.eql('INSUFFICIENT_BALANCE');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Same User Transfer - Should Fail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{aliceId}}\",\n  \"amount\": 10000,\n  \"idempotency_key\": \"same-user-001\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Same user transfer rejected', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Zero Amount - Should Fail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{bobId}}\",\n  \"amount\": 0,\n  \"idempotency_key\": \"zero-amount-001\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Zero amount rejected', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Negative Amount - Should Fail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"{{aliceId}}\",\n  \"to_user_id\": \"{{bobId}}\",\n  \"amount\": -10000,\n  \"idempotency_key\": \"negative-amount-001\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Negative amount rejected', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Unknown User - Should Fail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"from_user_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"to_user_id\": \"{{bobId}}\",\n  \"amount\": 10000,\n  \"idempotency_key\": \"unknown-user-001\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Unknown wallet rejected', function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "09 - Get Transfer",
+            "item": [
+                {
+                    "name": "Get Successful Transfer",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/transfers/{{transferId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "transfers",
+                                "{{transferId}}"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Transfer found', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Transfer is completed', function () {",
+                                    "    pm.expect(pm.response.json().status).to.eql('COMPLETED');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "10 - Final Balances",
+            "item": [
+                {
+                    "name": "Alice Final Balance - ₹200",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{aliceId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{aliceId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Alice final balance is ₹200', function () {",
+                                    "    pm.expect(Number(pm.response.json().balance)).to.eql(20000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Bob Final Balance - ₹800",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{bobId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{bobId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Bob final balance is ₹800', function () {",
+                                    "    pm.expect(Number(pm.response.json().balance)).to.eql(80000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Charlie Final Balance - ₹500",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{charlieId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{charlieId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Charlie final balance is ₹500', function () {",
+                                    "    pm.expect(Number(pm.response.json().balance)).to.eql(50000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Dave Final Balance - ₹1000",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{daveId}}/wallet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{daveId}}",
+                                "wallet"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Dave final balance is ₹1000', function () {",
+                                    "    pm.expect(Number(pm.response.json().balance)).to.eql(100000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "11 - Transaction History",
+            "item": [
+                {
+                    "name": "Alice Transaction History",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{aliceWalletId}}/transactions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{aliceWalletId}}",
+                                "transactions"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Alice transaction history returned', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Alice has transactions', function () {",
+                                    "    pm.expect(pm.response.json().length).to.be.above(0);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Bob Transaction History",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/wallets/{{bobWalletId}}/transactions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "wallets",
+                                "{{bobWalletId}}",
+                                "transactions"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Bob transaction history returned', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
